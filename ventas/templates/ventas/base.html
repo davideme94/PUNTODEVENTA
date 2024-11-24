@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Punto de Venta{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+        header { background: #e3e3e3; padding: 10px; }
+        nav a { margin: 10px; text-decoration: none; font-weight: bold; color: black; }
+        main { padding: 20px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Las Hermanas</h1>
+        <nav>
+            <a href="{% url 'cajero' %}">Cajero</a>
+            <a href="{% url 'historial' %}">Historial</a>
+            <a href="{% url 'repositorio' %}">Repositorio</a>
+            <a href="{% url 'ticket' %}">Ticket</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

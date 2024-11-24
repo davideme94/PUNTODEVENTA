@@ -1,0 +1,165 @@
+{% extends 'ventas/base.html' %}
+
+{% block title %}Historial{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilo general */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Contenedor principal */
+    .container {
+        max-width: 900px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 28px;
+        color: #444;
+        margin-bottom: 20px;
+    }
+
+    /* Tabla */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #007bff;
+        color: white;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    /* Subtabla para detalles */
+    .details-table {
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        width: 100%;
+    }
+
+    .details-table th {
+        background-color: #f8f9fa;
+        text-transform: none;
+        font-size: 13px;
+    }
+
+    /* Botones */
+    a {
+        display: inline-block;
+        padding: 6px 12px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-right: 5px;
+    }
+
+    a:hover {
+        background-color: #0056b3;
+    }
+
+    button {
+        padding: 6px 12px;
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #cc0000;
+    }
+
+    /* Mensaje vacío */
+    .empty {
+        text-align: center;
+        font-style: italic;
+        color: #777;
+        padding: 20px;
+    }
+</style>
+
+<div class="container">
+    <h2>Historial de Ventas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Venta</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Productos</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venta in ventas %}
+            <tr>
+                <td>{{ venta.id }}</td>
+                <td>{{ venta.fecha }}</td>
+                <td>${{ venta.total }}</td>
+                <td>
+                    <!-- Subtabla para detalles -->
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle in venta.detalles.all %}
+                            <tr>
+                                <td>{{ detalle.producto.nombre }}</td>
+                                <td>{{ detalle.cantidad }}</td>
+                                <td>${{ detalle.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="venta_id" value="{{ venta.id }}">
+                        <button type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="empty">No hay ventas registradas en el historial.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

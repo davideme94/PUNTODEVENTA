@@ -1,0 +1,90 @@
+{% extends 'ventas/base.html' %}
+
+{% block title %}Configurar Ticket{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos generales */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Contenedor principal */
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #ffffff;
+        padding: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 28px;
+        color: #444;
+        margin-bottom: 20px;
+    }
+
+    /* Formulario */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    textarea {
+        resize: none;
+        height: 100px;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+        align-self: center;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<div class="container">
+    <h2>Configurar Ticket</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="nombre_negocio">Nombre del Negocio:</label>
+        <input type="text" id="nombre_negocio" name="nombre_negocio" value="{{ configuracion.nombre_negocio }}" required>
+        <label for="mensaje_final">Mensaje Final:</label>
+        <textarea id="mensaje_final" name="mensaje_final">{{ configuracion.mensaje_final }}</textarea>
+        <button type="submit">Guardar Configuración</button>
+    </form>
+</div>
+{% endblock %}

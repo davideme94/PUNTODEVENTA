@@ -1,0 +1,365 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cajero</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* NAV */
+        nav {
+            background-color: #007bff;
+            padding: 10px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Título con imagen */
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .title-image {
+            width: 80px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        h2 {
+            font-size: 28px;
+            color: #444;
+            margin: 0;
+        }
+
+        /* Formulario */
+        .form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .form input {
+            width: calc(40% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .form button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Tabla de productos */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th, .table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .table td {
+            font-size: 14px;
+        }
+
+        .table .eliminar {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .table .eliminar:hover {
+            background-color: #cc0000;
+        }
+
+        /* Total */
+        .total {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Botón de imprimir */
+        .imprimir-ticket {
+            display: block;
+            margin: 20px auto;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .imprimir-ticket:hover {
+            background-color: #218838;
+        }
+
+        /* Botón terminar compra */
+        .terminar-compra {
+            display: block;
+            margin: 20px auto;
+            background-color: #17a2b8;
+            color: white;
+            padding: 12px 30px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .terminar-compra:hover {
+            background-color: #138496;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAV -->
+    <nav>
+        <div>
+            <a href="{% url 'cajero' %}">Cajero</a>
+            <a href="{% url 'historial' %}">Historial</a>
+            <a href="{% url 'repositorio' %}">Repositorio</a>
+            <a href="{% url 'ticket' %}">Ticket</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Título con imagen -->
+        <div class="title-container">
+            <img src="{% static 'images/logo.jpg' %}" alt="Logo Las Hermanas" class="title-image">
+            <h2>LAS HERMANAS</h2>
+        </div>
+
+        <!-- Formulario para escanear productos -->
+        <form class="form" method="post">
+            {% csrf_token %}
+            <label for="codigo_barra">Código:</label>
+            <input type="text" id="codigo_barra" name="codigo_barra" placeholder="Código de barra" autofocus required>
+            <label for="precio">Precio:</label>
+            <input type="number" step="0.01" id="precio" name="precio" placeholder="Precio (solo si no existe)">
+            <button type="submit" class="btn-agregar">Agregar</button>
+        </form>
+
+        <!-- Formulario para agregar productos manualmente -->
+        <form class="form" method="post">
+            {% csrf_token %}
+            <label for="nombre_manual">Nombre:</label>
+            <input type="text" id="nombre_manual" name="nombre_manual" placeholder="Nombre del producto" required>
+            <label for="precio_manual">Precio:</label>
+            <input type="number" step="0.01" id="precio_manual" name="precio_manual" placeholder="Precio" required>
+            <button type="submit" name="agregar_manual" class="btn-agregar">Agregar Manual</button>
+        </form>
+
+        <!-- Modal para productos inexistentes -->
+        {% if producto_inexistente %}
+        <div class="modal" style="display:block;">
+            <div class="modal-content">
+                <span class="close" onclick="document.querySelector('.modal').style.display='none'">&times;</span>
+                <h3>Producto no encontrado</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="codigo_barra_inexistente" value="{{ producto_inexistente.codigo_barra }}">
+                    <label for="nombre_inexistente">Nombre:</label>
+                    <input type="text" id="nombre_inexistente" name="nombre_inexistente" placeholder="Nombre del producto" required>
+                    <label for="precio_inexistente">Precio:</label>
+                    <input type="number" step="0.01" id="precio_inexistente" name="precio_inexistente" placeholder="Precio" required>
+                    <button type="submit" name="agregar_inexistente">Agregar Producto</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Tabla de productos agregados -->
+        <h3>Lista de productos del cliente</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos_cajero %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.cantidad }}</td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="actualizar_id" value="{{ producto.id }}">
+                            <input type="number" step="0.01" name="nuevo_precio" value="{{ producto.precio }}" style="width: 80px;">
+                            <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
+                        </form>
+                    </td>
+                    <td>${{ producto.subtotal }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="eliminar_id" value="{{ producto.id }}">
+                            <button type="submit" class="eliminar">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">No hay productos en la lista.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total -->
+        <p class="total">Total: ${{ total }}</p>
+
+        <!-- Input para monto y cálculo automático del cambio -->
+        <div class="form" style="margin-top: 20px;">
+            <label for="monto_pago">Monto de Pago:</label>
+            <input type="number" step="0.01" id="monto_pago" placeholder="Ingrese el monto">
+            <p class="total">Cambio: <span id="cambio">-</span></p>
+        </div>
+
+        <!-- Botón para imprimir el ticket -->
+        <form method="get" action="{% url 'imprimir_ticket' %}" target="_blank">
+            <button type="submit" class="imprimir-ticket">Imprimir Ticket</button>
+        </form>
+
+        <!-- Botón Terminar Compra -->
+        <form method="post" action="{% url 'terminar_compra' %}">
+            {% csrf_token %}
+            <button type="submit" class="terminar-compra">Terminar Compra</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('monto_pago').addEventListener('input', function() {
+            const total = parseFloat({{ total|default:0 }});
+            const montoPago = parseFloat(this.value);
+            const cambio = (montoPago - total).toFixed(2);
+
+            document.getElementById('cambio').textContent = cambio >= 0 ? `$${cambio}` : "Monto insuficiente";
+        });
+    </script>
+</body>
+</html>
