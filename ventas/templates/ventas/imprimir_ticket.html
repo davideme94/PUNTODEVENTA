@@ -5,33 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imprimir Ticket</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            width: 70mm; /* Ancho típico de una impresora térmica */
+        /* Estilos para la pantalla (modo oscuro) */
+        @media screen {
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                width: 70mm; /* Ancho típico de una impresora térmica */
+                background-color: #121212; /* Fondo oscuro */
+                color: #ffffff; /* Texto blanco */
+            }
+            h1, h2, h3 {
+                text-align: center;
+                color: #bb86fc; /* Títulos en color vibrante */
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            td, th {
+                text-align: left;
+                padding: 8px;
+                border-bottom: 1px solid #333; /* Bordes en gris oscuro */
+                color: #ffffff; /* Texto blanco */
+            }
+            th {
+                background-color: #333; /* Fondo gris oscuro para encabezados */
+                color: #ffffff; /* Texto blanco */
+            }
+            .total {
+                text-align: right;
+                font-weight: bold;
+                margin-top: 20px;
+                color: #ffffff; /* Texto blanco */
+            }
+            .footer {
+                text-align: center;
+                margin-top: 30px;
+                font-style: italic;
+                color: #777; /* Texto gris claro */
+            }
         }
-        h1, h2, h3 {
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        td, th {
-            text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-        }
-        .total {
-            text-align: right;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
+
+        /* Estilos para la impresión (claro) */
+        @media print {
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                width: 70mm;
+                background-color: #ffffff; /* Fondo blanco */
+                color: #000000; /* Texto negro */
+            }
+            h1, h2, h3 {
+                text-align: center;
+                color: #000000; /* Títulos en negro */
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            td, th {
+                text-align: left;
+                padding: 8px;
+                border-bottom: 1px solid #ddd; /* Bordes en gris claro */
+                color: #000000; /* Texto negro */
+            }
+            th {
+                background-color: #f4f6f9; /* Fondo claro para encabezados */
+                color: #000000; /* Texto negro */
+            }
+            .total {
+                text-align: right;
+                font-weight: bold;
+                margin-top: 20px;
+                color: #000000; /* Texto negro */
+            }
+            .footer {
+                text-align: center;
+                margin-top: 30px;
+                font-style: italic;
+                color: #333; /* Texto gris oscuro */
+            }
         }
     </style>
 </head>
