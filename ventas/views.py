@@ -9,6 +9,7 @@ from django.db import transaction
 from .models import Producto, Venta, DetalleVenta
 from django.db.models import Prefetch
 from django.http import JsonResponse
+from .models import Proveedor, RetiroEfectivo
 
 def cajero(request):
     productos_cajero = request.session.get('productos_cajero', [])
@@ -262,3 +263,51 @@ def historial(request):
         Venta.objects.filter(id=venta_id).delete()
 
     return render(request, "ventas/historial.html", {"ventas": ventas})
+
+
+
+
+def cargar_proveedor(request):
+    if request.method == "POST":
+        if "eliminar_id" in request.POST:
+            proveedor_id = request.POST.get("eliminar_id")
+            Proveedor.objects.filter(id=proveedor_id).delete()
+        elif "editar_id" in request.POST:
+            proveedor_id = request.POST.get("editar_id")
+            nuevo_nombre = request.POST.get("nuevo_nombre")
+            nuevo_monto = request.POST.get("nuevo_monto_pagado")
+            proveedor = Proveedor.objects.get(id=proveedor_id)
+            proveedor.nombre = nuevo_nombre
+            proveedor.monto_pagado = nuevo_monto
+            proveedor.save()
+        else:
+            nombre = request.POST.get("nombre")
+            monto_pagado = request.POST.get("monto_pagado")
+            Proveedor.objects.create(nombre=nombre, monto_pagado=monto_pagado)
+        return redirect("cargar_proveedor")
+
+    proveedores = Proveedor.objects.all()
+    return render(request, "ventas/cargar_proveedor.html", {"proveedores": proveedores})
+
+
+def registrar_retiro(request):
+    if request.method == "POST":
+        if "eliminar_id" in request.POST:
+            retiro_id = request.POST.get("eliminar_id")
+            RetiroEfectivo.objects.filter(id=retiro_id).delete()
+        elif "editar_id" in request.POST:
+            retiro_id = request.POST.get("editar_id")
+            nuevo_cliente = request.POST.get("nuevo_cliente")
+            nueva_cantidad = request.POST.get("nueva_cantidad")
+            retiro = RetiroEfectivo.objects.get(id=retiro_id)
+            retiro.cliente = nuevo_cliente
+            retiro.cantidad = nueva_cantidad
+            retiro.save()
+        else:
+            cliente = request.POST.get("cliente")
+            cantidad = request.POST.get("cantidad")
+            RetiroEfectivo.objects.create(cliente=cliente, cantidad=cantidad)
+        return redirect("registrar_retiro")
+
+    retiros = RetiroEfectivo.objects.all()
+    return render(request, "ventas/registrar_retiro.html", {"retiros": retiros})
