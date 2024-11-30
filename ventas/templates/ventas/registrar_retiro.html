@@ -125,6 +125,16 @@
             color: #777;
             padding: 20px;
         }
+
+        /* Totales por día */
+        .totales-dia {
+            margin-top: 20px;
+        }
+
+        .totales-dia h3 {
+            color: #bb86fc;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -191,6 +201,27 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Totales por día -->
+        <div class="totales-dia">
+            <h3>Totales por Día</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Total Retirado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for total in totales_por_dia %}
+                    <tr>
+                        <td>{{ total.dia }}</td>
+                        <td>${{ total.total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>

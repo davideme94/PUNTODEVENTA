@@ -10,6 +10,10 @@ from .models import Producto, Venta, DetalleVenta
 from django.db.models import Prefetch
 from django.http import JsonResponse
 from .models import Proveedor, RetiroEfectivo
+from datetime import date
+from django.db.models import Sum, DateField
+from django.db.models.functions import TruncDate
+from datetime import date
 
 def cajero(request):
     productos_cajero = request.session.get('productos_cajero', [])
@@ -265,8 +269,6 @@ def historial(request):
     return render(request, "ventas/historial.html", {"ventas": ventas})
 
 
-
-
 def cargar_proveedor(request):
     if request.method == "POST":
         if "eliminar_id" in request.POST:
@@ -275,19 +277,33 @@ def cargar_proveedor(request):
         elif "editar_id" in request.POST:
             proveedor_id = request.POST.get("editar_id")
             nuevo_nombre = request.POST.get("nuevo_nombre")
-            nuevo_monto = request.POST.get("nuevo_monto_pagado")
+            nuevo_monto = float(request.POST.get("nuevo_monto"))
             proveedor = Proveedor.objects.get(id=proveedor_id)
             proveedor.nombre = nuevo_nombre
             proveedor.monto_pagado = nuevo_monto
             proveedor.save()
         else:
             nombre = request.POST.get("nombre")
-            monto_pagado = request.POST.get("monto_pagado")
+            monto_pagado = float(request.POST.get("monto_pagado"))
             Proveedor.objects.create(nombre=nombre, monto_pagado=monto_pagado)
         return redirect("cargar_proveedor")
 
+    # Agrupar totales por fecha
+    totales_por_dia = (
+        Proveedor.objects.annotate(dia=TruncDate('fecha'))  # Agrupa por fecha
+        .values('dia')  # Selecciona la fecha
+        .annotate(total=Sum('monto_pagado'))  # Suma los montos de ese día
+        .order_by('-dia')  # Ordena por fecha descendente
+    )
+
     proveedores = Proveedor.objects.all()
-    return render(request, "ventas/cargar_proveedor.html", {"proveedores": proveedores})
+
+    return render(request, "ventas/cargar_proveedor.html", {
+        "proveedores": proveedores,
+        "totales_por_dia": totales_por_dia,
+    })
+
+
 
 
 def registrar_retiro(request):
@@ -298,16 +314,28 @@ def registrar_retiro(request):
         elif "editar_id" in request.POST:
             retiro_id = request.POST.get("editar_id")
             nuevo_cliente = request.POST.get("nuevo_cliente")
-            nueva_cantidad = request.POST.get("nueva_cantidad")
+            nueva_cantidad = float(request.POST.get("nueva_cantidad"))
             retiro = RetiroEfectivo.objects.get(id=retiro_id)
             retiro.cliente = nuevo_cliente
             retiro.cantidad = nueva_cantidad
             retiro.save()
         else:
             cliente = request.POST.get("cliente")
-            cantidad = request.POST.get("cantidad")
+            cantidad = float(request.POST.get("cantidad"))
             RetiroEfectivo.objects.create(cliente=cliente, cantidad=cantidad)
         return redirect("registrar_retiro")
 
+    # Calcular totales diarios
+    totales_por_dia = (
+        RetiroEfectivo.objects.annotate(dia=TruncDate('fecha'))  # Agrupa por fecha
+        .values('dia')  # Selecciona la fecha
+        .annotate(total=Sum('cantidad'))  # Suma las cantidades de ese día
+        .order_by('-dia')  # Ordena por fecha descendente
+    )
+
     retiros = RetiroEfectivo.objects.all()
-    return render(request, "ventas/registrar_retiro.html", {"retiros": retiros})
+
+    return render(request, "ventas/registrar_retiro.html", {
+        "retiros": retiros,
+        "totales_por_dia": totales_por_dia,
+    })
